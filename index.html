@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuánto gasta la gente en Uruguay?</title>
+<meta name="description" content="Compará tu gasto mensual con el de otras personas en Uruguay, de forma anónima.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F1; --surface:#FFFFFF; --ink:#18263A; --muted:#5B6878; --line:#D4DCDB;
+  --acc:#2F6B55; --you:#C0602A; --track:#E2E8E7; --warn-bg:#FBEFE6; --ok-bg:#E5F1EC;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#111A24; --surface:#18232F; --ink:#E6ECEA; --muted:#9AA7B4; --line:#2B3846;
+    --acc:#6FC3A0; --you:#F0995E; --track:#24313E; --warn-bg:#3A2A1F; --ok-bg:#1C3329; color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:780px;margin:0 auto;padding:32px 20px 64px}
+h1,h2{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;font-weight:700;letter-spacing:-0.01em;margin:0}
+h1{font-size:clamp(2rem,6.5vw,3.1rem);line-height:1.06;max-width:17ch}
+h2{font-size:1.35rem;margin-bottom:6px}
+h2 .n{display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.8em;margin-right:8px;vertical-align:.1em}
+.sub{color:var(--muted);margin:12px 0 0;font-size:1.08rem;max-width:58ch}
+.sub strong{color:var(--ink)}
+.hint{color:var(--muted);margin:0 0 12px;max-width:64ch}
+section{margin-top:44px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.banner{margin-top:20px;padding:12px 14px;border-radius:10px;background:var(--warn-bg);font-size:.95rem}
+.banner.ok{background:var(--ok-bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+select,input[type=text]{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,.drop:focus-within{outline:2px solid var(--acc);outline-offset:2px}
+.drop{display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;border:2px dashed var(--line);border-radius:12px;padding:28px 16px;cursor:pointer;background:var(--bg)}
+.drop:hover,.drop.on{border-color:var(--acc)}
+.drop-main{font-weight:600;font-size:1.05rem}
+.drop-sub{color:var(--muted);font-size:.88rem;max-width:50ch}
+.files{list-style:none;padding:0;margin:12px 0 0;font-size:.92rem}
+.files li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.files li:first-child{border-top:0}
+.redact{margin-top:14px}
+.redact pre{max-height:320px;overflow:auto;background:var(--bg);border-radius:8px;padding:10px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre;margin:8px 0 0}
+.redact .m{background:var(--ink);color:var(--ink);border-radius:2px}
+.pv-wrap{overflow:auto;max-height:420px;border:1px solid var(--line);border-radius:8px;margin-top:12px}
+.pv{border-collapse:collapse;width:100%;font-size:.9rem}
+.pv th,.pv td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.pv th{position:sticky;top:0;background:var(--surface);font-weight:600;color:var(--muted)}
+.pv td.t{white-space:normal;min-width:16ch}
+.pv .r{text-align:right;font-variant-numeric:tabular-nums}
+.pv tr.off td{color:var(--muted)}
+.pv select{font:inherit;font-size:.85rem;padding:2px 4px;width:auto;background:none}
+.tag{font-size:.78rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:6px;white-space:nowrap}
+.rate{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 0;font-size:.92rem}
+.rate input{width:9ch}
+.cats{display:grid;grid-template-columns:minmax(0,1fr) 13ch;gap:8px 12px;align-items:center;margin-top:14px}
+.cats input{text-align:right;font-variant-numeric:tabular-nums}
+.totalrow{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+.totalrow strong{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;font-size:1.5rem;font-variant-numeric:tabular-nums}
+.share{margin-top:18px;border:1px dashed var(--acc);border-radius:12px;padding:14px}
+.share p{margin:0 0 8px;font-size:.92rem;color:var(--muted)}
+.share code{display:block;white-space:pre-wrap;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:var(--bg);border-radius:8px;padding:10px}
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:.92rem}
+.consent input{margin-top:4px;width:18px;height:18px;flex:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.primary{font:inherit;font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
+.primary:disabled{opacity:.5;cursor:not-allowed}
+.ghost{font:inherit;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 14px;cursor:pointer}
+.msg{font-size:.92rem;color:var(--muted)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:6px}
+.big div{display:flex;flex-direction:column}
+.big .k{font-size:.85rem;color:var(--muted)}
+.big .v{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;font-size:1.8rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.big .v.you{color:var(--you)}
+.big .s{font-size:.85rem;color:var(--muted)}
+.legend{display:flex;gap:18px;font-size:.85rem;color:var(--muted);margin:10px 0 4px;flex-wrap:wrap}
+.legend i{display:inline-block;vertical-align:middle;margin-right:6px}
+.lg-g{width:18px;height:8px;border-radius:4px;background:var(--acc)}
+.lg-y{width:3px;height:14px;background:var(--you)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:11px 0;border-top:1px solid var(--line)}
+.row .name{font-weight:500}
+.row .money{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.row .track{grid-column:1/-1;position:relative;height:10px;background:var(--track);border-radius:5px;margin:6px 0 4px}
+.row .fill{position:absolute;left:0;top:0;bottom:0;background:var(--acc);border-radius:5px}
+.row .mark{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--you);border-radius:2px}
+.row .note{grid-column:1/-1;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);margin:6px 0}
+details{border-top:1px solid var(--line);padding:14px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;font-size:1.05rem}
+details p,details li{color:var(--muted);max-width:68ch}
+.redact summary{font-size:.98rem}
+.redact{border-bottom:0!important;padding-bottom:0}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.row .fill{transition:width .35s ease}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>¿Cuánto gasta la gente en Uruguay?</h1>
+    <p class="sub" id="lead">Subí tu estado de cuenta, mirá en qué se te va la plata y comparalo con el de otras personas parecidas a vos. Sin cuentas y sin datos personales.</p>
+    <div class="banner" id="banner" hidden></div>
+  </header>
+
+  <section aria-labelledby="h1s">
+    <h2 id="h1s"><span class="n">1</span>Subí tu estado de cuenta</h2>
+    <p class="hint">PDF, Excel o CSV de tu banco o tarjeta. Podés subir varios (por ejemplo, la tarjeta y la cuenta). El archivo se lee en tu dispositivo y <strong>nunca se envía</strong>.</p>
+    <div class="panel">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" multiple hidden>
+        <span class="drop-main">Elegí o arrastrá tus archivos</span>
+        <span class="drop-sub">¿No tenés el archivo a mano? Saltá al paso 2 y completá los montos vos.</span>
+      </label>
+      <p class="msg" id="upmsg" role="status"></p>
+      <ul class="files" id="files"></ul>
+      <details class="redact" id="redactbox" hidden>
+        <summary id="redactsum">Ver lo que leyó la app, con tus datos tapados</summary>
+        <p>Así queda el documento con nombre, dirección, números de cuenta y de tarjeta tapados. Esto es solo para que lo revises: el documento no se envía a ningún lado.</p>
+        <pre id="redact"></pre>
+      </details>
+    </div>
+  </section>
+
+  <section aria-labelledby="h2s">
+    <h2 id="h2s"><span class="n">2</span>Revisá tus gastos</h2>
+    <p class="hint">Destildá lo que no sea un gasto tuyo y corregí la categoría si hace falta. Los traspasos y la compra de dólares vienen destildados.</p>
+    <div class="panel">
+      <div id="txbox" hidden>
+        <div class="rate" id="ratebox" hidden><label for="rate">Cotización del dólar para pasar a pesos</label><input id="rate" type="text" inputmode="decimal" placeholder="40,50"></div>
+        <div class="pv-wrap"><table class="pv"><thead><tr><th><span class="hp">Incluir</span></th><th>Fecha</th><th>Descripción</th><th class="r">Monto</th><th>Categoría</th></tr></thead><tbody id="txbody"></tbody></table></div>
+      </div>
+      <div class="cats" id="cats"></div>
+      <div class="totalrow"><span>Total del mes</span><strong id="total">$ 0</strong></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h3s">
+    <h2 id="h3s"><span class="n">3</span>Contanos de vos y enviá</h2>
+    <form class="panel" id="form" autocomplete="off">
+      <div class="grid">
+        <label class="f">Mes<select id="a-mes"></select></label>
+        <label class="f">Edad<select id="a-edad"></select></label>
+        <label class="f">Con quién vivís<select id="a-hogar"></select></label>
+        <label class="f">Departamento<select id="a-depto"></select></label>
+        <label class="f">Ingreso mensual (opcional)<select id="a-ing"></select></label>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Sitio web<input id="hp" type="text" tabindex="-1"></label></div>
+      <div class="share">
+        <p>Esto es lo único que se envía, con montos redondeados a $ 100:</p>
+        <code id="preview"></code>
+        <p style="margin:10px 0 0">No se envía tu nombre, tu archivo, tus comercios, fechas ni números de cuenta.</p>
+      </div>
+      <label class="consent"><input type="checkbox" id="ok"><span>Acepto compartir este resumen anónimo para las estadísticas de esta página. Puedo borrarlo cuando quiera desde este mismo dispositivo.</span></label>
+      <div class="btnrow">
+        <button class="primary" type="submit" id="send" disabled>Enviar aporte</button>
+        <button class="ghost" type="button" id="del" hidden>Borrar mi aporte de este mes</button>
+        <span class="msg" id="formmsg" role="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="hres">
+    <h2 id="hres">Resultados</h2>
+    <div class="filters">
+      <label class="f">Mes<select id="f-mes"></select></label>
+      <label class="f">Edad<select id="f-edad"></select></label>
+      <label class="f">Hogar<select id="f-hogar"></select></label>
+      <label class="f">Departamento<select id="f-depto"></select></label>
+    </div>
+    <div class="panel" id="results"><p class="empty">Cargando…</p></div>
+  </section>
+
+  <section>
+    <details>
+      <summary>Cómo se cuida tu privacidad</summary>
+      <ul>
+        <li>Tu estado de cuenta se lee en tu navegador. No se sube a ningún servidor.</li>
+        <li>Solo se envía el resumen que ves en el paso 3: mes, rangos de edad e ingreso, departamento, tipo de hogar y montos por categoría redondeados.</li>
+        <li>Tu aporte no queda asociado a tu nombre ni a una cuenta. Este dispositivo guarda un código al azar que te permite editarlo o borrarlo.</li>
+        <li>Los resultados muestran solo medianas de grupos de 3 aportes o más. Nadie puede ver aportes individuales desde esta página.</li>
+        <li>El código de esta página es público, así que cualquiera puede verificar qué se envía.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Responsable de los datos</summary>
+      <p id="owner">Completá acá quién administra esta página y un mail de contacto para pedidos sobre los datos.</p>
+    </details>
+  </section>
+</main>
+<script>
+(function(){
+  // ================= CONFIGURACIÓN =================
+  // Pegá acá los datos de tu proyecto de Supabase (Project Settings → API).
+  const SUPABASE_URL = "https://gatspwfshkbldcqmiexb.supabase.co";      // ej: "https://abcdefgh.supabase.co"
+  const SUPABASE_KEY = "sb_publishable_z-R1C203uW6WPVIH225zCw_ShK0hKF0";      // la clave pública: "anon" o "publishable"
+  const RESPONSABLE  = "Mateo Severi — mateseveri@gmail.com";      // ej: "Mateo Severi — contacto@ejemplo.com"
+  // ==================================================
+
+  const CATS = [
+    {id:"vivienda", name:"Alquiler y gastos comunes", ref:24, kw:["alquiler","gastos comunes","inmobiliaria","administracion","garantia","anda","cgn"]},
+    {id:"servicios", name:"Luz, agua, internet y celular", ref:6, kw:["ute","ose","antel","movistar","claro","supergas","internet","fibra","vera"]},
+    {id:"super", name:"Supermercado y alimentos", ref:18.5, kw:["tienda inglesa","disco","devoto","geant","ta-ta","tata","macro mercado","el dorado","kinko","frog","carniceria","verduleria","feria","almacen","autoservice","supermercado","fresh market","multiahorro","panaderia","mercadito","market","frog","minimercado","candy","golosin"]},
+    {id:"afuera", name:"Comida afuera y delivery", ref:7, kw:["pedidosya","pedidos ya","rappi","restaurant","restaurante","parrilla","cafe","bar ","mcdonald","burger","starbucks","chivito","pizzeria","bodega","cerveceria","mc donald","snack","empanada","heladeria"]},
+    {id:"transporte", name:"Transporte", ref:11, kw:["stm","cutcsa","uber","cabify","ancap","petrobras","axion","nafta","peaje","telepeaje","estacionamiento","taxi","copsa","cot","sacc"]},
+    {id:"salud", name:"Salud", ref:9, kw:["casmu","medica uruguaya","smi","mp ","asociacion espanola","espanola","hospital","farmacia","farmashop","san roque","sanatorio","emergencia","semm","ucm","odontolog","optica","pharmac","drogueria"]},
+    {id:"ropa", name:"Ropa y calzado", ref:4, kw:["zara","indian","renner","ropa","calzado","nike","adidas","tienda","shopping","pigalle","parisien"]},
+    {id:"ocio", name:"Salidas, deporte y ocio", ref:6, kw:["cine","movie","tickantel","redtickets","entradas","gimnasio","gym","boliche","teatro","steam","playstation","pase libre","paselibre"]},
+    {id:"suscripciones", name:"Suscripciones", ref:3, kw:["netflix","spotify","disney","hbo","max.com","youtube","prime video","amazon prime","apple.com","icloud","google","chatgpt","claude","anthropic","apple.com bill","paramount"]},
+    {id:"educacion", name:"Educación y libros", ref:3, kw:["udelar","ort","ucu","um ","curso","libreria","libro","instituto","alianza","matricula"]},
+    {id:"otros", name:"Otros", ref:8.5, kw:[]}
+  ];
+  const INCOME_KW = ["sueldo","salario","haberes","transferencia recibida","deposito","acreditacion","devolucion","reintegro"];
+  const norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const parseISO = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+  let LAST_TEXT = [];
+  function parseAmount(raw){
+    let s = String(raw||"").replace(/[^\d.,-]/g,"");
+    if(!/\d/.test(s)) return NaN;
+    s = s.replace(/-/g,"");
+    const hasC = s.includes(","), hasD = s.includes(".");
+    if(hasC && hasD){
+      if(s.lastIndexOf(",") > s.lastIndexOf(".")) s = s.replace(/\./g,"").replace(",",".");
+      else s = s.replace(/,/g,"");
+    } else if(hasC){
+      s = /^\d{1,3}(,\d{3})+$/.test(s) ? s.replace(/,/g,"") : s.replace(/,/g,".");
+    } else if(hasD){
+      if(/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,"");
+    }
+    return parseFloat(s);
+  }
+  function guessCat(desc){
+    const d = " "+norm(desc)+" ";
+    for(const c of CATS){ if(c.kw.some(k=>d.includes(k))) return c.id; }
+    return "otros";
+  }
+  function parseDate(v){
+    if(v instanceof Date && !isNaN(v)) return new Date(v.getFullYear(),v.getMonth(),v.getDate());
+    const s=String(v||"").trim(); let m;
+    if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return new Date(+m[1],+m[2]-1,+m[3]);
+    if((m=s.match(/^(\d{1,2})[\/\-. ](\d{1,2})[\/\-. ](\d{2}|\d{4})(?=\s|$)/)) && +m[2]>=1 && +m[2]<=12 && +m[1]>=1 && +m[1]<=31){ let y=+m[3]; if(y<100) y+=2000; return new Date(y,+m[2]-1,+m[1]); }
+    return null;
+  }
+  const isNum = c => { const t=String(c==null?"":c).replace(/U\$S|US\$|USD|UYU|\$/gi,"").trim(); return t!=="" && /^[-+(]?\s*[\d.,]+\s*-?\)?$/.test(t) && /\d/.test(t) && !parseDate(t); };
+  const isDec = c => isNum(c) && /[.,]\d{2}$/.test(String(c).replace(/[-)\s]/g,""));
+  const isNeg = c => { const t=String(c).trim(); return /^-|^\(|-$/.test(t.replace(/\s/g,"")); };
+
+  // table: array of arrays (strings / numbers / Dates) -> candidate gastos
+  const DATE_RE=/^(\d{1,2})[\/\-. ](\d{1,2})[\/\-. ](\d{2}|\d{4})(?=\s|$)/;
+  const SKIP_DESC=/^pagos?$|su pago|pago recibido|saldo (del|anterior|contado)|^saldo/;
+  const REFUND_DESC=/reduc|rediva|devoluc|bonific|reintegro/;
+  const MOVE_DESC=/^traspaso|^transferencia|transf\.? a |^deb\.? ?cambio|cambiostol|compra de (dolares|moneda)|^cambio/;
+  const REFUND_STRIP=/^(rediva|reduc\.?\s*iva(\s*ley)?|reduccion\s*iva|cre\.?\s*varios|devolucion|reintegro|bonificacion)\s*[\d.]*\s*/;
+  const dayDiff=(a,b)=>Math.round((parseISO(a)-parseISO(b))/864e5);
+  // refunds (IVA reductions, reversed charges) lower or cancel the purchase they belong to
+  function applyRefunds(out, refunds){
+    refunds.forEach(r=>{
+      const n=norm(r.desc), merch=n.replace(REFUND_STRIP,"").trim();
+      const near=out.filter(g=>!g.gone && g.usd===r.usd && Math.abs(dayDiff(r.fecha,g.fecha))<=10 && r.fecha>=g.fecha);
+      const byName = g => merch.length>=3 && norm(g.desc).includes(merch.slice(0,Math.min(merch.length,12)));
+      const exact = near.filter(g=>Math.abs(g.monto-r.amt)<0.005 && (!merch || byName(g))).pop();
+      if(exact){ exact.gone=true; return; }
+      if(!REFUND_DESC.test(n)) return;
+      let t = merch.length>=3 ? out.filter(g=>!g.gone && g.usd===r.usd && Math.abs(dayDiff(r.fecha,g.fecha))<=1 && byName(g) && g.monto>r.amt)
+                                   .sort((a,b)=>Math.abs(a.i-r.i)-Math.abs(b.i-r.i))[0] : null;
+      if(!t){ const prev=out.filter(g=>g.i<r.i && !g.gone).pop(); if(prev && prev.fecha===r.fecha && prev.usd===r.usd && prev.monto>r.amt) t=prev; }
+      if(t) t.monto=Math.round((t.monto-r.amt)*100)/100;
+    });
+    return out.filter(g=>!g.gone).map(({i,gone,...g})=>g);
+  }
+  // table: array of arrays (strings / numbers / Dates) -> candidate gastos
+  function rowsFromTable(table){
+    table = table.map(r=>r.map(c=> c instanceof Date ? c : (c==null?"":String(c).trim())));
+    let hi=-1;
+    for(let i=0;i<Math.min(table.length,80);i++){
+      const n=table[i].map(c=>norm(String(c)));
+      if(n.some(c=>/^fecha/.test(c)) && n.some(c=>/debito|debe|importe|monto|cargo|valor/.test(c))){ hi=i; break; }
+    }
+    const out=[], refunds=[]; let seq=0;
+    const push=(d,desc,amt,neg,usd)=>{
+      desc=String(desc||"").replace(/\s+/g," ").replace(/\s*[!\u2757\u26a0\ufe0f]+\s*$/,"").trim();
+      const n=norm(desc);
+      if(SKIP_DESC.test(n)) return;
+      if(neg){ refunds.push({fecha:iso(d), desc, amt, usd, i:seq++}); return; }
+      const g={fecha:iso(d), desc:desc.replace(/^compra\s+/i,""), monto:amt, usd, i:seq++};
+      if(MOVE_DESC.test(n)) g.kind = /cambio/.test(n) ? "cambio" : "traspaso";
+      out.push(g);
+    };
+    if(hi>=0){
+      const h=table[hi].map(c=>norm(String(c)));
+      const find = re => h.findIndex(c=>re.test(c));
+      const cF=find(/^fecha/);
+      let cD=find(/descrip|concepto|detalle|comercio/); if(cD<0) cD=find(/movimiento|referencia|establec/);
+      const cDeb=find(/debito|debe|cargo/), cCred=find(/credito|haber|abono/);
+      let cPes=find(/importe\s*\$|importe\s*(en\s*)?pesos|pesos|\$\s*$/);
+      if(cPes>=0 && /u\$s|us\$|usd|dol/.test(h[cPes])) cPes=-1;
+      const cUsd=find(/u\$s|us\$|usd|dolar/);
+      let cImp = (cDeb<0 && cPes<0) ? h.findIndex(c=>/importe|monto|valor/.test(c) && !/origen|u\$s|usd|dolar/.test(c)) : -1;
+      const cMon=find(/moneda/);
+      const body=table.slice(hi+1);
+      const amtCol = cDeb>=0 ? cDeb : (cPes>=0 ? cPes : cImp);
+      // sign convention: if most amounts are negative, negatives are the gastos
+      const vals=body.map(r=>r[amtCol]).filter(isNum);
+      const negMajor = cDeb<0 && vals.filter(isNeg).length > vals.length/2;
+      body.forEach(r=>{
+        const raw=r[cF]; const d=parseDate(raw); if(!d) return;
+        let desc = cD>=0 ? String(r[cD]||"") : "";
+        if(typeof raw==="string"){ const rest=raw.replace(DATE_RE,"").replace(/^\s*\d{4}\b/,"").trim(); if(rest && !isNum(rest)) desc = (rest+" "+desc).trim(); }
+        if(!desc) desc = r.filter((c,i)=>i!==cF && !isNum(c) && !(c instanceof Date)).sort((a,b)=>String(b).length-String(a).length)[0]||"";
+        let cell = amtCol>=0 ? r[amtCol] : "", usd=false, credit=false;
+        if(!isNum(cell) && cUsd>=0 && isNum(r[cUsd])){ cell=r[cUsd]; usd=true; }
+        if(!isNum(cell) && cDeb>=0 && cCred>=0 && isNum(r[cCred])){ cell=r[cCred]; credit=true; }
+        if(!isNum(cell)) return;
+        if(cMon>=0 && /u\$s|usd|dol/.test(norm(String(r[cMon]||"")))) usd=true;
+        const amt=parseAmount(cell); if(!(amt>0)) return;
+        let neg = credit || isNeg(cell); if(negMajor) neg=!neg;
+        push(d,desc,amt,neg,usd);
+      });
+      return applyRefunds(out, refunds);
+    }
+    // no header: heuristics per row
+    const firstNums=table.map(r=>r.find(c=>isDec(c)) ?? r.find(c=>isNum(c))).filter(c=>c!=null);
+    const negMajor=firstNums.filter(isNeg).length > firstNums.length/2;
+    table.forEach(r=>{
+      let d=null, di=-1; r.forEach((c,i)=>{ if(!d){ const x=parseDate(c); if(x){ d=x; di=i; } } }); if(!d) return;
+      const cell=r.find((c,i)=>i!==di && isDec(c)) ?? r.find((c,i)=>i!==di && isNum(c)); if(cell==null) return;
+      const amt=parseAmount(cell); if(!(amt>0)) return;
+      let desc=r.filter((c,i)=>i!==di && !isNum(c)).map(String).sort((a,b)=>b.length-a.length)[0]||"";
+      if(!desc && typeof r[di]==="string") desc=r[di].replace(DATE_RE,"").replace(/^\s*\d{4}\b/,"");
+      let neg=isNeg(cell); if(negMajor) neg=!neg;
+      push(d,desc,amt,neg,false);
+    });
+    return applyRefunds(out, refunds);
+  }
+
+  function splitText(text){
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    const sample=lines.slice(0,20).join("\n");
+    const delim = sample.includes("\t")?"\t":((sample.match(/;/g)||[]).length>=(sample.match(/,/g)||[]).length/3 && sample.includes(";") ? ";" : ",");
+    return lines.map(l=>parseCSVLine(l,delim));
+  }
+  function parseCSVLine(line,d){
+    const out=[]; let cur="", q=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(q){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+      else if(ch==='"') q=true;
+      else if(ch===d){ out.push(cur); cur=""; }
+      else cur+=ch;
+    }
+    out.push(cur); return out;
+  }
+
+  function loadScript(src){
+    return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("load")); document.head.appendChild(s); });
+  }
+  async function readXlsx(file){
+    if(!window.XLSX) await loadScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js");
+    const wb=XLSX.read(await file.arrayBuffer(),{type:"array",cellDates:true});
+    let all=[];
+    LAST_TEXT=[];
+    wb.SheetNames.forEach(n=>{ const t=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:""}); t.forEach(r=>LAST_TEXT.push(r.map(c=>c instanceof Date?iso(c):String(c)).join("   "))); all = all.concat(rowsFromTable(t)); });
+    return all;
+  }
+  async function readPdf(file){
+    const base="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/";
+    if(!window.pdfjsLib) await loadScript(base+"pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = base+"pdf.worker.min.js";
+    const pdf = await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+    const lines=[];
+    for(let p=1;p<=pdf.numPages;p++){
+      const page=await pdf.getPage(p); const tc=await page.getTextContent();
+      const items=[];
+      tc.items.forEach(i=>{
+        if(!i.str || !i.str.trim()) return;
+        const x0=i.transform[4], y=i.transform[5], cw=(i.width||0)/Math.max(1,i.str.length);
+        const re=/\S+(?: \S+)*/g; let m;
+        while((m=re.exec(i.str))) items.push({s:m[0], x:x0+m.index*cw, y, w:m[0].length*cw});
+      });
+      items.sort((a,b)=>b.y-a.y||a.x-b.x);
+      let cur=null;
+      items.forEach(it=>{
+        if(!cur || Math.abs(cur.y-it.y)>3){ cur={y:it.y,items:[]}; lines.push(cur); }
+        cur.items.push(it);
+      });
+    }
+    // merge items into cells with x centers
+    const cellLines = lines.map(l=>{
+      l.items.sort((a,b)=>a.x-b.x);
+      const cells=[]; let c=null;
+      l.items.forEach(it=>{
+        if(c && it.x - c.end < 6){ c.s += (it.x - c.end > 1 ? " " : "") + it.s; c.end=it.x+it.w; }
+        else { c={s:it.s,x:it.x,end:it.x+it.w}; cells.push(c); }
+      });
+      cells.forEach(c=>{ c.s=c.s.trim(); c.cx=(c.x+c.end)/2; });
+      return cells;
+    });
+    // find header
+    let header=null;
+    for(const cells of cellLines){
+      const n=cells.map(c=>norm(c.s));
+      if(n.some(c=>/^fecha/.test(c)) && n.some(c=>/debito|debe|importe|monto|cargo|saldo/.test(c))){ header=cells; break; }
+    }
+    LAST_TEXT = cellLines.map(cs=>cs.map(c=>c.s).join("   "));
+    if(!header){
+      // card statements without a text header: the "saldo" line with two amounts marks the pesos and dollar columns
+      let pesX=null, usdX=null;
+      for(const cs of cellLines){
+        if(!/saldo/.test(norm(cs.map(c=>c.s).join(" ")))) continue;
+        const a=cs.filter(c=>isDec(c.s));
+        if(a.length===2){ pesX=a[0].end; usdX=a[1].end; break; }
+      }
+      if(pesX!=null){
+        const tol=Math.max(10,(usdX-pesX)/4);
+        const t=[["Fecha","Detalle","Importe $","Importe U$S"]];
+        cellLines.forEach(cs=>{
+          const dc=cs.find(c=>parseDate(c.s)); if(!dc) return;
+          const desc=cs.filter(c=>c!==dc && !isNum(c.s)).map(c=>c.s).join(" ");
+          const pes=cs.find(c=>isDec(c.s) && Math.abs(c.end-pesX)<tol);
+          const usd=cs.find(c=>isDec(c.s) && Math.abs(c.end-usdX)<tol);
+          t.push([dc.s, desc, pes?pes.s:"", usd?usd.s:""]);
+        });
+        return rowsFromTable(t);
+      }
+      return rowsFromTable(cellLines.map(cs=>cs.map(c=>c.s)));
+    }
+    const table=[header.map(c=>c.s)];
+    cellLines.forEach(cells=>{
+      if(cells===header) return;
+      const row=header.map(()=> "");
+      cells.forEach(c=>{
+        let best=0,bd=Infinity;
+        header.forEach((h,i)=>{ const d = isNum(c.s) ? Math.min(Math.abs(c.end-h.end),Math.abs(c.cx-h.cx)) : Math.min(Math.abs(c.x-h.x),Math.abs(c.cx-h.cx)); if(d<bd){bd=d;best=i;} });
+        row[best] = row[best] ? row[best]+" "+c.s : c.s;
+      });
+      table.push(row);
+    });
+    return rowsFromTable(table);
+  }
+
+
+  // ================= Recorte de datos personales =================
+  const KEEP=/^(fecha|fechas|cuenta|nº|n°|no|moneda|pesos|dolares|u\$s|us\$|saldo|saldos|actual|anterior|final|contado|vencimiento|proximo|limite|credito|disponible|acordado|tasas|efectivas|mes|financiacion|mora|hoja|emision|tarjeta|detalle|importe|origen|concepto|debito|t\.e\.a\.|tea|cheques|depositados|a|de|del|el|la|los|en|y|por|confirmar|pago|minimo|recargo|consumos|exterior|iva|inc\.?|\(mas|iva\)|\(iva|inc\.\)|\$|%|-|\/|buscar|ultimos|5|dias|historica|consulta|visa|master|mastercard|oca)$/;
+  const looksAmount = t => /^[-+(]?\$?\s*\d{1,3}([.,]\d{3})*([.,]\d{1,2})\)?-?%?$/.test(t) || /^\d+[.,]\d{1,2}%?$/.test(t);
+  function redactLines(lines){
+    const isTx = l => { const t=l.trim(); return DATE_RE.test(t) && /\d[.,]\d{2}/.test(t); };
+    let first=lines.findIndex(isTx), last=-1; lines.forEach((l,i)=>{ if(isTx(l)) last=i; });
+    let masked=0;
+    const out=lines.map((line,i)=>{
+      const strict = first<0 || i<first || i>last;
+      return line.split(/(\s+)/).map(tok=>{
+        if(!tok.trim()) return {t:tok};
+        const n=norm(tok);
+        let hide=false;
+        if(/@/.test(tok) && /\./.test(tok)) hide=true;
+        else if(/\d{4,}/.test(tok.replace(/[.\-\s]/g,"")) && !looksAmount(tok) && !DATE_RE.test(tok)) hide=true;
+        else if(strict && !KEEP.test(n) && !looksAmount(tok) && !/^\d{1,2}([\/\-.]\d{1,2}){1,2}$/.test(tok) && !/^\d{1,3}$/.test(tok)) hide=true;
+        if(hide){ masked++; return {t:tok,m:true}; }
+        return {t:tok};
+      });
+    });
+    return {out,masked};
+  }
+  function showRedaction(allLines){
+    const {out,masked}=redactLines(allLines);
+    const pre=$("redact"); pre.textContent="";
+    out.forEach((segs,i)=>{
+      segs.forEach(s=>{
+        if(s.m){ const sp=document.createElement("span"); sp.className="m"; sp.textContent="█".repeat(Math.min(s.t.length,24)); pre.appendChild(sp); }
+        else pre.appendChild(document.createTextNode(s.t));
+      });
+      if(i<out.length-1) pre.appendChild(document.createTextNode("\n"));
+    });
+    $("redactsum").textContent="Ver lo que leyó la app ("+masked+(masked===1?" dato tapado)":" datos tapados)");
+    $("redactbox").hidden=false;
+  }
+
+  // ================= Utilidades =================
+  const $=id=>document.getElementById(id);
+  const fmt=n=>"$ "+Math.round(n).toLocaleString("es-UY");
+  const pct=n=>(Math.round(n*10)/10).toLocaleString("es-UY")+" %";
+  const r100=n=>Math.round(n/100)*100;
+  const MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"];
+  const mesLabel=k=>{ const [y,m]=k.split("-").map(Number); return MONTHS[m-1]+" "+y; };
+  const EDAD=["18–24","25–29","30–39","40–49","50–64","65+"];
+  const HOGAR=["Solo/a","En pareja","Con familia o hijos","Con amigos o compañeros"];
+  const DEPTOS=["Artigas","Canelones","Cerro Largo","Colonia","Durazno","Flores","Florida","Lavalleja","Maldonado","Montevideo","Paysandú","Río Negro","Rivera","Rocha","Salto","San José","Soriano","Tacuarembó","Treinta y Tres"];
+  const ING=["Prefiero no decir","Menos de $ 30.000","$ 30.000 a 50.000","$ 50.000 a 80.000","$ 80.000 a 120.000","Más de $ 120.000"];
+  const CONFIGURED = /^https:\/\/.+/.test(SUPABASE_URL) && SUPABASE_KEY.length>20;
+
+  async function rpc(fn,args){
+    const h={"Content-Type":"application/json","apikey":SUPABASE_KEY};
+    if(SUPABASE_KEY.startsWith("eyJ")) h.Authorization="Bearer "+SUPABASE_KEY;
+    const res=await fetch(SUPABASE_URL.replace(/\/$/,"")+"/rest/v1/rpc/"+fn,{method:"POST",headers:h,body:JSON.stringify(args)});
+    const txt=await res.text(); let data=null; try{ data=txt?JSON.parse(txt):null; }catch(e){}
+    if(!res.ok) throw new Error((data&&data.message)||("Error "+res.status));
+    return data;
+  }
+  function getToken(create){
+    let t=null; try{ t=localStorage.getItem("aporte-token"); }catch(e){}
+    if(!t && create){
+      const a=new Uint8Array(24); crypto.getRandomValues(a); t=Array.from(a,b=>b.toString(16).padStart(2,"0")).join("");
+      try{ localStorage.setItem("aporte-token",t); }catch(e){}
+    }
+    return t;
+  }
+
+  // ================= Meses y selects =================
+  const now=new Date(), months=[];
+  for(let i=0;i<13;i++){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")); }
+  const defMonth=months[1];
+  function fill(sel,opts,first){ sel.innerHTML=""; if(first){ const o=document.createElement("option"); o.value=""; o.textContent=first; sel.appendChild(o); } opts.forEach(v=>{ const o=document.createElement("option"); if(Array.isArray(v)){o.value=v[0];o.textContent=v[1];} else {o.value=v;o.textContent=v;} sel.appendChild(o); }); }
+  fill($("a-mes"),months.map(m=>[m,mesLabel(m)])); $("a-mes").value=defMonth;
+  fill($("a-edad"),EDAD); $("a-edad").value="25–29";
+  fill($("a-hogar"),HOGAR); fill($("a-depto"),DEPTOS); $("a-depto").value="Montevideo"; fill($("a-ing"),ING);
+  fill($("f-mes"),months.map(m=>[m,mesLabel(m)])); $("f-mes").value=defMonth;
+  fill($("f-edad"),EDAD,"Todas"); fill($("f-hogar"),HOGAR,"Todos"); fill($("f-depto"),DEPTOS,"Todos");
+  if(RESPONSABLE) $("owner").textContent="Esta página la administra "+RESPONSABLE+". Podés escribir para cualquier consulta sobre los datos.";
+
+  // ================= Categorías (paso 2) =================
+  CATS.forEach(c=>{
+    const l=document.createElement("label"); l.htmlFor="c-"+c.id; l.textContent=c.name;
+    const i=document.createElement("input"); i.type="text"; i.id="c-"+c.id; i.inputMode="numeric"; i.placeholder="0";
+    i.addEventListener("input",updPreview);
+    $("cats").append(l,i);
+  });
+
+  // ================= Movimientos leídos =================
+  let txs=[], rate=null, allText=[];
+  const dupKey=g=>g.fecha+"|"+g.usd+"|"+Math.round(g.monto*100)+"|"+norm(g.desc);
+  function addTxs(list){
+    const have=new Set(txs.map(dupKey));
+    list.filter(c=>!INCOME_KW.some(k=>norm(c.desc).includes(k))).forEach(c=>{
+      if(have.has(dupKey(c))) return; have.add(dupKey(c));
+      txs.push({...c, cat:guessCat(c.desc), on:!c.kind && !c.usd});
+    });
+    txs.sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  }
+  function renderTx(){
+    $("txbox").hidden=!txs.length;
+    $("ratebox").hidden=!txs.some(t=>t.usd);
+    const body=$("txbody"); body.innerHTML="";
+    txs.forEach(g=>{
+      const tr=document.createElement("tr"); if(!g.on) tr.className="off";
+      const d=parseISO(g.fecha);
+      tr.innerHTML="<td><input type='checkbox' aria-label='Incluir'></td><td>"+d.getDate()+"/"+(d.getMonth()+1)+"</td><td class='t'></td><td class='r'></td><td></td>";
+      const td=tr.querySelector(".t"); td.textContent=g.desc||"(sin descripción)";
+      if(g.kind){ const s=document.createElement("span"); s.className="tag"; s.textContent=g.kind==="cambio"?"compra de dólares":"traspaso"; td.appendChild(s); }
+      tr.querySelector(".r").textContent = g.usd ? "US$ "+g.monto.toLocaleString("es-UY",{minimumFractionDigits:2}) : fmt(g.monto);
+      const cb=tr.querySelector("input"); cb.checked=g.on;
+      cb.addEventListener("change",()=>{
+        if(g.usd && !rate && cb.checked){ cb.checked=false; $("rate").focus(); return; }
+        g.on=cb.checked; tr.className=g.on?"":"off"; fromTxs();
+      });
+      const sel=document.createElement("select"); sel.setAttribute("aria-label","Categoría");
+      CATS.forEach(c=>{ const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; if(c.id===g.cat) o.selected=true; sel.appendChild(o); });
+      sel.addEventListener("change",()=>{ g.cat=sel.value; fromTxs(); });
+      tr.lastChild.appendChild(sel);
+      body.appendChild(tr);
+    });
+  }
+  function fromTxs(){
+    const sums={}; CATS.forEach(c=>sums[c.id]=0);
+    const monthCount={};
+    txs.filter(t=>t.on).forEach(t=>{
+      const v=t.usd ? (rate? t.monto*rate : 0) : t.monto;
+      sums[t.cat]+=v; const m=t.fecha.slice(0,7); monthCount[m]=(monthCount[m]||0)+v;
+    });
+    CATS.forEach(c=>$("c-"+c.id).value = sums[c.id] ? String(Math.round(sums[c.id])) : "");
+    const best=Object.entries(monthCount).sort((a,b)=>b[1]-a[1])[0];
+    if(best && months.includes(best[0]) && $("a-mes").value!==best[0]) { $("a-mes").value=best[0]; loadMine(); }
+    updPreview();
+  }
+  $("rate").addEventListener("input",e=>{
+    const v=parseAmount(e.target.value); rate=v>0?v:null;
+    txs.forEach(t=>{ if(t.usd) t.on=!!rate; });
+    renderTx(); fromTxs();
+  });
+
+  async function handleFiles(files){
+    for(const file of files){
+      $("upmsg").textContent="Leyendo "+file.name+"…";
+      const name=file.name.toLowerCase();
+      try{
+        let rows;
+        LAST_TEXT=[];
+        if(name.endsWith(".pdf")) rows=await readPdf(file);
+        else if(name.endsWith(".xlsx")||name.endsWith(".xls")) rows=await readXlsx(file);
+        else { const text=await file.text(); const t=splitText(text); LAST_TEXT=t.map(r=>r.join("   ")); rows=rowsFromTable(t); }
+        const li=document.createElement("li");
+        const a=document.createElement("span"); a.textContent=file.name;
+        const b=document.createElement("span"); b.className="msg";
+        if(!rows.length){
+          b.textContent="no encontré movimientos";
+        } else {
+          b.textContent=rows.length+(rows.length===1?" movimiento":" movimientos");
+          addTxs(rows);
+        }
+        li.append(a,b); $("files").appendChild(li);
+        allText = allText.concat(allText.length?["",""]:[], LAST_TEXT);
+      }catch(e){
+        $("upmsg").textContent = e && e.name==="PasswordException"
+          ? file.name+" tiene contraseña. Guardalo sin contraseña o descargá el Excel."
+          : "No pude leer "+file.name+". Probá con el Excel o CSV de tu homebanking.";
+        continue;
+      }
+    }
+    $("upmsg").textContent = txs.length ? "Listo. Revisá los movimientos en el paso 2." : "No encontré movimientos. Si el PDF es un escaneo, descargá el Excel o CSV desde el homebanking, o completá los montos a mano.";
+    if(allText.length) showRedaction(allText);
+    renderTx(); fromTxs();
+    $("file").value="";
+  }
+  $("file").addEventListener("change",e=>handleFiles([...e.target.files]));
+  const drop=$("drop");
+  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.add("on"); }));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{ e.preventDefault(); drop.classList.remove("on"); }));
+  drop.addEventListener("drop",e=>handleFiles([...e.dataTransfer.files]));
+
+  // ================= Resumen y envío =================
+  function readForm(){
+    const cats={}; let total=0;
+    CATS.forEach(c=>{ const v=r100(parseAmount($("c-"+c.id).value)); if(v>0){ cats[c.id]=v; total+=v; } });
+    return {mes:$("a-mes").value, edad:$("a-edad").value, hogar:$("a-hogar").value, depto:$("a-depto").value,
+            ingreso:$("a-ing").value===ING[0]?"":$("a-ing").value, cats, total};
+  }
+  function updPreview(){
+    const a=readForm();
+    $("total").textContent=fmt(a.total);
+    const lines=["Mes: "+mesLabel(a.mes),"Edad: "+a.edad+" · Hogar: "+a.hogar+" · "+a.depto];
+    if(a.ingreso) lines.push("Ingreso: "+a.ingreso);
+    lines.push("Total: "+fmt(a.total));
+    CATS.forEach(c=>{ if(a.cats[c.id]) lines.push("  "+c.name+": "+fmt(a.cats[c.id])); });
+    $("preview").textContent=lines.join("\n");
+    $("send").disabled = !CONFIGURED || a.total<=0 || !$("ok").checked;
+  }
+  ["a-edad","a-hogar","a-depto","a-ing","ok"].forEach(id=>$(id).addEventListener("change",updPreview));
+  $("a-mes").addEventListener("change",()=>{ loadMine(); updPreview(); });
+
+  let mine=null;
+  async function loadMine(){
+    mine=null; $("del").hidden=true; $("send").textContent="Enviar aporte";
+    const t=getToken(false); if(!t||!CONFIGURED){ renderResults(); return; }
+    try{
+      const r=await rpc("mi_aporte",{p_token:t,p_mes:$("a-mes").value});
+      if(r && r.total){
+        mine=r; $("del").hidden=false; $("send").textContent="Actualizar aporte";
+        if(!txs.length){
+          CATS.forEach(c=>$("c-"+c.id).value = r.cats&&r.cats[c.id] ? String(r.cats[c.id]) : "");
+          if(EDAD.includes(r.edad)) $("a-edad").value=r.edad;
+          if(HOGAR.includes(r.hogar)) $("a-hogar").value=r.hogar;
+          if(DEPTOS.includes(r.depto)) $("a-depto").value=r.depto;
+          $("a-ing").value = ING.includes(r.ingreso) ? r.ingreso : ING[0];
+        }
+        $("formmsg").textContent="Ya enviaste tu aporte de "+mesLabel(r.mes)+" desde este dispositivo. Podés actualizarlo o borrarlo.";
+        updPreview();
+      }
+    }catch(e){}
+    renderResults();
+  }
+
+  $("form").addEventListener("submit",async e=>{
+    e.preventDefault();
+    if($("hp").value) return;
+    const a=readForm(); if(!CONFIGURED||a.total<=0||!$("ok").checked) return;
+    $("send").disabled=true; $("formmsg").textContent="Enviando…";
+    try{
+      await rpc("enviar_aporte",{p_token:getToken(true),p_mes:a.mes,p_edad:a.edad,p_hogar:a.hogar,p_depto:a.depto,p_ingreso:a.ingreso,p_cats:a.cats});
+      $("formmsg").textContent="¡Gracias! Tu aporte quedó guardado.";
+      $("f-mes").value=a.mes;
+      await loadMine();
+    }catch(err){ $("formmsg").textContent="No se pudo enviar: "+err.message; }
+    updPreview();
+  });
+  $("del").addEventListener("click",async()=>{
+    const b=$("del");
+    if(!b.dataset.sure){ b.dataset.sure="1"; b.textContent="Sí, borrar"; setTimeout(()=>{ delete b.dataset.sure; b.textContent="Borrar mi aporte de este mes"; },4000); return; }
+    try{ await rpc("borrar_aporte",{p_token:getToken(false),p_mes:$("a-mes").value}); $("formmsg").textContent="Borraste tu aporte."; await loadMine(); }
+    catch(e){ $("formmsg").textContent="No se pudo borrar: "+e.message; }
+  });
+
+  // ================= Resultados =================
+  let reqId=0;
+  async function renderResults(){
+    const box=$("results");
+    if(!CONFIGURED){ box.innerHTML="<p class='empty'>Los resultados aparecen cuando la página está conectada a la base de datos.</p>"; return; }
+    const fm=$("f-mes").value, id=++reqId;
+    let r;
+    try{
+      r=await rpc("resultados",{p_mes:fm,p_edad:$("f-edad").value||null,p_hogar:$("f-hogar").value||null,p_depto:$("f-depto").value||null});
+    }catch(e){ if(id===reqId) box.innerHTML="<p class='empty'>No se pudieron cargar los resultados. Probá recargar la página.</p>"; return; }
+    if(id!==reqId) return;
+    const personas=r&&r.personas||0;
+    $("lead").innerHTML = personas
+      ? "Subí tu estado de cuenta, mirá en qué se te va la plata y comparalo con otras personas. Ya aportaron <strong>"+personas+(personas===1?" persona":" personas")+"</strong>, sin cuentas y sin datos personales."
+      : "Subí tu estado de cuenta, mirá en qué se te va la plata y comparalo con otras personas. Todavía nadie aportó: podés ser la primera persona.";
+    const n=r&&r.n||0;
+    if(n<3){
+      box.innerHTML="<p class='empty'>"+(n?"Este grupo tiene "+n+(n===1?" aporte":" aportes")+". Para cuidar la privacidad, se muestra recién con 3 o más. Probá con filtros más amplios o compartí la página.":"Todavía no hay aportes para "+mesLabel(fm)+" con estos filtros.")+"</p>";
+      return;
+    }
+    const me = mine && mine.mes===fm ? mine : null;
+    const med=+r.mediana;
+    let html="<div class='big'><div><span class='k'>Gasto mensual típico (mediana)</span><span class='v'>"+fmt(med)+"</span><span class='s'>La mitad gasta entre "+fmt(r.q1)+" y "+fmt(r.q3)+"</span></div>"+
+      (me?"<div><span class='k'>Tu gasto</span><span class='v you'>"+fmt(me.total)+"</span><span class='s'>"+(me.total>med?pct((me.total/med-1)*100)+" más que la mediana":me.total<med?pct((1-me.total/med)*100)+" menos que la mediana":"igual a la mediana")+"</span></div>":"")+
+      "<div><span class='k'>Aportes en este grupo</span><span class='v'>"+n+"</span><span class='s'>"+mesLabel(fm)+"</span></div></div>";
+    html+="<div class='legend'><span><i class='lg-g'></i>Parte típica del gasto en el grupo</span>"+(me?"<span><i class='lg-y'></i>Tu parte</span>":"")+"</div>";
+    const stats=(r.categorias||[]).map(c=>{ const cat=CATS.find(x=>x.id===c.id); return cat?{name:cat.name,share:+c.share||0,amt:+c.amt||0,usan:+c.usan||0,mine:me?((me.cats&&me.cats[c.id])||0)/me.total*100:null}:null; })
+      .filter(s=>s&&s.usan>0).sort((a,b)=>b.share-a.share||b.usan-a.usan);
+    const max=Math.max(25,...stats.map(s=>Math.max(s.share,s.mine||0)));
+    stats.forEach(s=>{
+      html+="<div class='row'><span class='name'></span><span class='money'>"+fmt(s.amt)+"</span>"+
+        "<div class='track' aria-hidden='true'><div class='fill' style='width:"+(s.share/max*100)+"%'></div>"+(s.mine!=null?"<div class='mark' style='left:calc("+(s.mine/max*100)+"% - 1px)'></div>":"")+"</div>"+
+        "<div class='note'>Parte típica "+pct(s.share)+(s.mine!=null?" · la tuya "+pct(s.mine):"")+" · "+s.usan+" de "+n+(s.usan===1?" gasta":" gastan")+" en esto</div></div>";
+    });
+    box.innerHTML=html;
+    box.querySelectorAll(".row .name").forEach((el,i)=>el.textContent=stats[i].name);
+  }
+  ["f-mes","f-edad","f-hogar","f-depto"].forEach(id=>$(id).addEventListener("change",renderResults));
+
+  // ================= Inicio =================
+  if(!CONFIGURED){
+    const b=$("banner"); b.hidden=false;
+    b.textContent="Esta página todavía no está conectada a la base de datos. Podés probar la lectura del estado de cuenta, pero no enviar aportes. (Para quien la administra: completá SUPABASE_URL y SUPABASE_KEY al principio del código.)";
+  }
+  updPreview(); loadMine();
+})();
+</script>
+</body>
+</html>
